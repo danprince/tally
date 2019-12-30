@@ -1,0 +1,279 @@
+/* TODO: Add focus indicators for desktop  */
+
+:root {
+  --button-color: #e3efec;
+  --background-color: #ffffff;
+  --active-color: #00ffbb;
+  --text-color: #424e4a;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16pt;
+  user-select: none;
+  background: var(--background-color);
+  color: var(--text-color);
+  max-width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.Container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 100px;
+  box-sizing: border-box;
+}
+
+.ScoreTable {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: flex-start;
+  margin: 8px;
+  min-width: 300px;
+}
+
+.ScoreTableRow {
+  display: flex;
+  align-items: center;
+  flex-grow: 0;
+  padding: 8px;
+  animation: 500ms RowSlideIn;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes RowSlideIn {
+  0% {
+    transform: translateX(100%);
+  }
+
+  80% {
+    transform: translateX(-10px);
+  }
+
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+.PlayerName {
+  font-weight: bold;
+  width: auto;
+  margin: 0 12px;
+  font-size: 20pt;
+}
+
+.PlayerNameInput {
+  font: inherit;
+  font-weight: bold;
+  border: 0;
+  outline: none;
+  background: none;
+  margin: 0 12px;
+  display: flex;
+  flex-grow: 1;
+  font-size: 20pt;
+}
+
+.Icon {
+  fill: currentColor;
+  height: 1em;
+  width: 1em;
+  vertical-align: baseline;
+}
+
+.Icon[data-name=crown] {
+  color: #ffbe29;
+}
+
+.BottomBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-shadow: inset 0 -80px 20px var(--background-color);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+.Button {
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: var(--button-color);
+  outline: none;
+  transition-property: transform;
+  transition-duration: 300ms;
+  font: inherit;
+  font-weight: bold;
+  color: inherit;
+}
+
+.Button:disabled {
+  opacity: 0.5;
+}
+
+.SquareButton {
+  border-radius: 8px;
+  height: 3em;
+  width: 3em;
+}
+
+.CircleButton {
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+}
+
+.PopVisibility {
+  opacity: 0;
+  transition-property: transform;
+  transition-duration: 300ms;
+}
+
+.PopVisibility[data-visible=true] {
+  opacity: 1;
+  animation: 500ms linear PopIn;
+}
+
+.BottomBar .Button {
+  margin: 0 4px;
+  animation: 800ms Appear;
+}
+
+.BottomBar .Button:active {
+  opacity: 0.6;
+  transform: scale(1.1);
+}
+
+@keyframes Appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  80% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes PopIn {
+  0% {
+    transform: scale(0);
+  }
+
+  80% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes Shake {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  20% {
+    transform: rotate(15deg) scale(1.2);
+  }
+
+  40% {
+    transform: rotate(-10deg);
+  }
+
+  60% {
+    transform: rotate(5deg);
+  }
+
+  80% {
+    transform: rotate(2.5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.ScoreButton[data-selected=true] {
+  animation: 500ms linear Shake;
+  background: var(--active-color);
+  z-index: 5;
+}
+
+.ScoreButton[data-selected=true] .TemporaryScoreButton {
+  background: var(--active-color);
+}
+
+.ScoreButton {
+  position: relative;
+  font-weight: 900;
+}
+
+.TemporaryScoreButton {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 36px;
+  height: 36px;
+  font-size: 10pt;
+  color:
+}
+
+[data-animation=pop] {
+  animation: 300ms Pop;
+}
+
+@keyframes Pop {
+  0% {
+    transform: scale(0.9);
+  }
+
+  70% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (min-width: 450px) {
+  .Container {
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .BottomBar {
+    position: static;
+  }
+}
+
+
+.NextPlayerButton {
+  background: var(--active-color);
+}
