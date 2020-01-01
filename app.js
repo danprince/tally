@@ -3,21 +3,38 @@ import { useReducer, useEffect } from "https://unpkg.com/preact@latest/hooks/dis
 
 // --- Utils ---
 
+/**
+ * @param {(string | boolean | undefined | null)[]} classNames
+ */
 let classes = (...classNames) =>
   classNames.filter(x => x).join(" ");
 
 let uid = () =>
   Math.random().toString(36).slice(2, 5);
 
+/**
+ * @template T
+ * @param {T[]} items
+ * @param {keyof T} key
+ */
 let maxBy = (items, key) =>
   items.reduce((max, item) => item[key] > max[key] ? item : max);
 
+/**
+ * @param {Tally.State} state
+ */
 let saveToLocalStorage = state =>
   localStorage.gameState = JSON.stringify(state);
 
+/**
+ * @return {Tally.State | null}
+ */
 let loadFromLocalStorage = () =>
   JSON.parse(localStorage.gameState || null);
 
+/**
+ * @param {string} selector
+ */
 let scrollIntoView = (selector) => {
   let element = document.querySelector(selector);
 
@@ -39,6 +56,9 @@ let scrollIntoView = (selector) => {
 
 // --- State ---
 
+/**
+ * @type {Tally.State}
+ */
 let initialState = {
   status: "waiting",
   newPlayerName: "",
@@ -50,23 +70,45 @@ let initialState = {
   paused: false,
 };
 
+/**
+ * @param {Tally.State} state
+ */
 let hasEnteredName = ({ newPlayerName }) =>
   newPlayerName.trim() !== "";
 
+/**
+ * @param {Tally.State} state
+ */
 let hasPlayers = ({ players }) =>
   players.length > 0;
 
+/**
+ * @param {Tally.State} state
+ * @param {string} id
+ */
 let isSelectedPlayer = ({ selectedPlayerId }, id) =>
   selectedPlayerId === id;
 
+/**
+ * @param {Tally.State} state
+ * @param {string} id
+ */
 let hasHighestScore = ({ players }, id) => {
   let player = maxBy(players, "score");
   return player.id === id;
 };
 
+/**
+ * @param {Tally.State} state
+ */
 let canResetScore = ({ players }) =>
   players.some(player => player.score !== 0);
 
+/**
+ * @param {Tally.State} state
+ * @param {Tally.Action} action
+ * @return {Tally.State}
+ */
 let reducer = (state, action) => {
   switch (action.type) {
     case "start-game": {
@@ -179,10 +221,17 @@ let reducer = (state, action) => {
 
 // --- Hooks ---
 
-let useKeyListener = (callbacks, deps) => {
+/**
+ * @param {{ [key: string]: (event: KeyboardEvent) => void }} handlers
+ * @param {any[]} deps
+ */
+let useKeyListener = (handlers, deps) => {
+  /**
+   * @param {KeyboardEvent} event
+   */
   let handler = event => {
-    if (event.key in callbacks) {
-      callbacks[event.key](event);
+    if (event.key in handlers) {
+      handlers[event.key](event);
     }
   }
 
@@ -273,7 +322,7 @@ let App = () => {
         }),
 
         (
-          state.status === "waiting-for-players" ||
+          state.status === "waiting" ||
           state.status === "paused"
         ) && (
           h(ScoreTableRow, {}, [
@@ -287,6 +336,7 @@ let App = () => {
               ]),
             ]),
             h(PlayerNameInput, {
+              type: "text",
               id: "new-player-name",
               key: "new-player-name",
               placeholder: "Add player",
@@ -321,7 +371,7 @@ let App = () => {
         ),
 
         (
-          state.status === "waiting-for-players" ||
+          state.status === "waiting" ||
           state.status === "paused"
         ) && (
           h(CircleButton, {
@@ -345,7 +395,7 @@ let App = () => {
           h(Fragment, {}, [
             ...state.increments.map(amount => (
               h(CircleButton, {
-                onClick: () => dispatch({ type: "change-score", amount }),
+                onClick: () => dispatch({ type: "change-score", amount })
               }, [
                 h(SignedNumber, { value: amount })
               ])
@@ -376,9 +426,9 @@ let PlayerNameInput = styled("input", "PlayerNameInput");
 let ScoreTable = styled("div", "ScoreTable");
 let ScoreTableRow = styled("div", "ScoreTableRow");
 
-let TemporaryScoreButton = props =>
+let TemporaryScoreButton = ({ value=0 }) =>
   h(CircleButton, { class: "TemporaryScoreButton" }, [
-    h(SignedNumber, { value: props.value }),
+    h(SignedNumber, { value }),
   ]);
 
 let SignedNumber = ({ value }) =>
